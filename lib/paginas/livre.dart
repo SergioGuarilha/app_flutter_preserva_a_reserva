@@ -20,9 +20,9 @@ class Livre extends StatelessWidget {
             scrollbars: true,
             ),
           child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+            scrollDirection: Axis.vertical,
             physics: const ClampingScrollPhysics(),
-            child: Row(
+            child: Column(
               children: [
               _buildImage('recursos/IMG_0736.png'),
               _buildImage('recursos/IMG_0860.png'),
@@ -42,8 +42,8 @@ class Livre extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Image.asset(
         path,
-        width: 600,
-        height: 500,
+        width: 400,
+        height: 300,
         fit: BoxFit.cover, // Ensures images maintain aspect ratio
       ),
     );
