@@ -11,18 +11,23 @@ class Dados extends StatefulWidget {
 }
 
 class _EstadoPaginaDados extends State<Dados> {
-  // Controladores de texto
   final TextEditingController _controladorNome = TextEditingController();
   final TextEditingController _controladorIdade = TextEditingController();
+
+  @override
+  void dispose() {
+    _controladorNome.dispose();
+    _controladorIdade.dispose();
+    super.dispose();
+  }
+
   Future<void> _removerPessoa(BuildContext context) async {
-    // Mostra aba para escolher a pessoa a ser removida
     final Pessoa? pessoaSelecionada = await showDialog<Pessoa?>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Selecione quem remover'),
         content: SizedBox(
           width: double.maxFinite,
-          // Mostra as pessoas atualmente na lista
           child: ListView.builder(
             shrinkWrap: true,
             itemCount: lista.length,
@@ -45,7 +50,6 @@ class _EstadoPaginaDados extends State<Dados> {
     );
 
     if (pessoaSelecionada != null) {
-      // Aba de confirmação
       final confirmado = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
@@ -63,8 +67,8 @@ class _EstadoPaginaDados extends State<Dados> {
           ],
         ),
       ) ?? false;
-      //Remove a pessoa se operação é confirmada
-      if (confirmado) {
+
+      if (confirmado && mounted) {
         setState(() {
           lista.remove(pessoaSelecionada);
         });
@@ -76,7 +80,6 @@ class _EstadoPaginaDados extends State<Dados> {
   }
 
   Future<void> _atualizarPessoa(BuildContext context) async {
-    // Mostra aba para seleção de pessoa que terá seu cadastro atualizado
     final Pessoa? pessoaSelecionada = await showDialog<Pessoa?>(
       context: context,
       builder: (context) => AlertDialog(
@@ -104,8 +107,7 @@ class _EstadoPaginaDados extends State<Dados> {
       ),
     );
 
-    if (pessoaSelecionada != null) {
-      // Cria controladores temporários para edição na aba de diálogo
+    if (pessoaSelecionada != null && mounted) {
       final nomeController = TextEditingController(text: pessoaSelecionada.nome);
       final idadeController = TextEditingController(text: pessoaSelecionada.idade.toString());
 
@@ -140,21 +142,21 @@ class _EstadoPaginaDados extends State<Dados> {
         ),
       ) ?? false;
 
-      if (confirmado) {
-        final novoNome = nomeController.text;
-        final novaIdadeStr = idadeController.text;
-
+      if (confirmado && mounted) {
         try {
-          final novaIdade = int.parse(novaIdadeStr);
-          final index = lista.indexOf(pessoaSelecionada);
-          if (index != -1) {
-            setState(() {
+          final novoNome = nomeController.text;
+          final novaIdade = int.parse(idadeController.text);
+
+          setState(() {
+            final index = lista.indexOf(pessoaSelecionada);
+            if (index != -1) {
               lista[index] = Pessoa(novoNome, novaIdade);
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Dados atualizados com sucesso!')),
-            );
-          }
+            }
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Dados atualizados com sucesso!')),
+          );
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Idade inválida! Digite um número.")),
@@ -162,25 +164,20 @@ class _EstadoPaginaDados extends State<Dados> {
         }
       }
 
-      // Desfaz os controladores temporários
       nomeController.dispose();
       idadeController.dispose();
     }
   }
+
   TextField criarCaixaEdicao({required TextEditingController controlador}) {
     return TextField(
       style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(constraints: BoxConstraints(maxWidth: 300)),
-        controller: controlador
+      decoration: InputDecoration(
+        constraints: BoxConstraints(maxWidth: 300),
+        border: OutlineInputBorder(),
+      ),
+      controller: controlador,
     );
-  }
-
-  @override
-  //Função de desfazer os controladores
-  void dispose() {
-    _controladorNome.dispose();
-    _controladorIdade.dispose();
-    super.dispose();
   }
 
   @override
@@ -189,95 +186,88 @@ class _EstadoPaginaDados extends State<Dados> {
       appBar: AppBar(
         title: Title(color: Colors.black, child: Text('Preserva a Reserva')),
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        padding: EdgeInsets.all(15),
-        child: Column(
-          spacing: 8,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              style: TextStyle(
-                color: Colors.white,
-                backgroundColor: Colors.green,
-                fontSize: 30
-              ),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          padding: EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
                 'Área de cadastro, atualização e remoção de dados',
-            ),
-            Text(
                 style: TextStyle(
-                    color: Colors.white
+                  color: Colors.white,
+                  backgroundColor: Colors.green,
+                  fontSize: 24,
                 ),
-                'Nome: ${_controladorNome.text}'
-            ),
-            criarCaixaEdicao(controlador: _controladorNome),
-            Text(
-                style: TextStyle(
-                    color: Colors.white
-                ),
-                'Idade: ${_controladorIdade.text}'
-            ),
-            criarCaixaEdicao(controlador: _controladorIdade),
-            const SizedBox(height: 10),
-            Row(
-              spacing: 10,
-              children: [
-                FloatingActionButton(
-                  backgroundColor: Color.fromARGB(255, 20, 150, 20),
-                  hoverColor: Colors.lightGreen,
-                  onPressed: () {
-                    final String nome = _controladorNome.text;
-                    final String stringIdade = _controladorIdade.text;
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Nome: ${_controladorNome.text}',
+                style: TextStyle(color: Colors.white),
+              ),
+              criarCaixaEdicao(controlador: _controladorNome),
+              SizedBox(height: 15),
+              Text(
+                'Idade: ${_controladorIdade.text}',
+                style: TextStyle(color: Colors.white),
+              ),
+              criarCaixaEdicao(controlador: _controladorIdade),
+              SizedBox(height: 20),
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  FloatingActionButton(
+                    backgroundColor: Color.fromARGB(255, 20, 150, 20),
+                    onPressed: () {
+                      final nome = _controladorNome.text;
+                      final stringIdade = _controladorIdade.text;
 
-                    try {
-                      final int idade = int.parse(stringIdade);
-                      lista.add(Pessoa(nome, idade));
-                      _controladorNome.clear();
-                      _controladorIdade.clear();
-                      setState(() {});
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Você foi cadastrado com sucesso')),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Idade inválida! Digite um número.")),
-                      );
-                    }
-                  },
-                  tooltip: 'Registrar',
-                  child: const Icon(
-                      color: Colors.white,
-                      Icons.add
+                      try {
+                        final idade = int.parse(stringIdade);
+                        if (mounted) {
+                          setState(() {
+                            lista.add(Pessoa(nome, idade));
+                            _controladorNome.clear();
+                            _controladorIdade.clear();
+                          });
+                        }
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Você foi cadastrado com sucesso')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Idade inválida! Digite um número.")),
+                        );
+                      }
+                    },
+                    tooltip: 'Registrar',
+                    child: Icon(Icons.add, color: Colors.white),
                   ),
-                ),
-                FloatingActionButton(
-                  onPressed: () => _atualizarPessoa(context),
-                  hoverColor: Colors.lime,
-                  tooltip: 'Atualizar',
-                  backgroundColor: Color.fromARGB(255, 200, 200, 25),
-                  child: Icon(Icons.update, color: Colors.white), // Different color for update
-                ),
-                FloatingActionButton(
-                  backgroundColor: Color.fromARGB(255, 255, 50, 50),
-                  hoverColor: Colors.redAccent,
-                  onPressed: () => _removerPessoa(context),  // Updated to use the new method
-                  tooltip: 'Apagar',
-                  child: const Icon(
-                      color: Colors.white,
-                      Icons.remove
+                  FloatingActionButton(
+                    onPressed: () => _atualizarPessoa(context),
+                    tooltip: 'Atualizar',
+                    backgroundColor: Color.fromARGB(255, 200, 200, 25),
+                    child: Icon(Icons.update, color: Colors.white),
                   ),
-                ),
-                FilledButton(
+                  FloatingActionButton(
+                    backgroundColor: Color.fromARGB(255, 255, 50, 50),
+                    onPressed: () => _removerPessoa(context),
+                    tooltip: 'Apagar',
+                    child: Icon(Icons.remove, color: Colors.white),
+                  ),
+                  ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateColor.resolveWith((states) => Color.fromARGB(255, 20, 150, 20)),
-
+                      backgroundColor: WidgetStateProperty.all(Color.fromARGB(255, 20, 150, 20)),
                     ),
-                    onPressed: ()=> Navigator.pop(context),
-                    child: Text('Voltar')),
-              ],
-            ),
-          ],
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('Voltar', style: TextStyle(color: Colors.white)),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
