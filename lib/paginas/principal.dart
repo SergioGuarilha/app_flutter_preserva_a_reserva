@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trabalho_av1_app_moveis/app_simples_flutter/lib/paginas/livre.dart';
+import 'package:trabalho_av1_app_moveis/paginas/livre.dart';
 import 'package:trabalho_av1_app_moveis/meu_scaffold.dart';
 import './dados.dart';
 import 'package:trabalho_av1_app_moveis/lista.dart';
