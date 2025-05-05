@@ -42,7 +42,7 @@ class Livre extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Image.asset(
         path,
-        width: 400,
+        width: double.infinity,
         height: 300,
         fit: BoxFit.cover, // Ensures images maintain aspect ratio
       ),
