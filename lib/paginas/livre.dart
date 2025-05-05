@@ -7,8 +7,10 @@ class Livre extends StatelessWidget {
 
   Widget build(BuildContext context){
     return MeuScaffold(
-      appBar: AppBar(),
-      body: Text('data'),
-    );
+      appBar: AppBar(
+        title: Title(color: Colors.black, child: Text('Preserva a Reserva')),
+      ),
+      body: Text('Pagina livre')
+      );
   }
 }

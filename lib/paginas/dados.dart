@@ -187,7 +187,7 @@ class _EstadoPaginaDados extends State<Dados> {
   Widget build(BuildContext context) {
     return MeuScaffold(
       appBar: AppBar(
-        title: Title(color: Colors.black, child: Text('Preserva Reserva')),
+        title: Title(color: Colors.black, child: Text('Preserva a Reserva')),
       ),
       body: Container(
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -203,7 +203,7 @@ class _EstadoPaginaDados extends State<Dados> {
                 backgroundColor: Colors.green,
                 fontSize: 30
               ),
-                'Área de cadastro e remoção de dados',
+                'Área de cadastro, atualização e remoção de dados',
             ),
             Text(
                 style: TextStyle(
@@ -253,13 +253,14 @@ class _EstadoPaginaDados extends State<Dados> {
                 ),
                 FloatingActionButton(
                   onPressed: () => _atualizarPessoa(context),
+                  hoverColor: Colors.lime,
                   tooltip: 'Atualizar',
-                  backgroundColor: Color.fromARGB(255, 75, 75, 255),
+                  backgroundColor: Color.fromARGB(255, 200, 200, 25),
                   child: Icon(Icons.update, color: Colors.white), // Different color for update
                 ),
                 FloatingActionButton(
-                  backgroundColor: Color.fromARGB(255, 255, 75, 75),
-                  hoverColor: Colors.lightGreen,
+                  backgroundColor: Color.fromARGB(255, 255, 50, 50),
+                  hoverColor: Colors.redAccent,
                   onPressed: () => _removerPessoa(context),  // Updated to use the new method
                   tooltip: 'Apagar',
                   child: const Icon(

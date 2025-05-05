@@ -61,6 +61,13 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  assets:
+    - recursos/IMG_0736.png
+    - recursos/IMG_0860.png
+    - recursos/Pica-pau-do-campo(M)4.png
+    - recursos/Pica-pau-rei2.png
+    - recursos/Sabiá-una(M)4.png
+    - recursos/Saí-andorinha(F)1.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
